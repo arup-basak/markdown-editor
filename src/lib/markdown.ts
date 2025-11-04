@@ -1,5 +1,6 @@
 import { unified } from "unified";
 import remarkParse from "remark-parse";
+import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
@@ -21,6 +22,7 @@ export async function markdownToHtml(markdown: string, options: MarkdownOptions)
   const theme = themeMap[options.theme];
   const processor = unified()
     .use(remarkParse)
+    .use(remarkBreaks)
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeSlug)
