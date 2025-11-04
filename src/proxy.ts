@@ -6,7 +6,6 @@ export async function proxy(request: NextRequest) {
   try {
     const session = await auth.api.getSession({ 
       headers: request.headers,
-      cookies: request.cookies,
     });
 
     // Allow access to auth routes and API auth routes

@@ -18,6 +18,8 @@ model User {
   documents     Document[]
   sessions      Session[]
   accounts      Account[]
+  polarCustomerId String? @unique
+  subscription  Subscription?
 }
 
 model Session {
@@ -87,4 +89,24 @@ model DocumentVersion {
   document  Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
 
   @@index([documentId, createdAt])
+}
+
+model Subscription {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  polarSubscriptionId   String   @unique
+  polarCustomerId       String
+  polarProductId        String
+  status                String   // active, canceled, past_due, etc.
+  currentPeriodStart    DateTime
+  currentPeriodEnd      DateTime
+  cancelAtPeriodEnd     Boolean  @default(false)
+  canceledAt            DateTime?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([polarSubscriptionId])
+  @@index([status])
 }

@@ -4,14 +4,14 @@ import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { exportToDOCXFromHtml, exportToPDFClient } from "@/lib/export";
 import { useMemo } from "react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
+import { Check } from "lucide-react";
 
 type TopBarProps = {
   currentHtml: string;
@@ -33,44 +33,82 @@ export default function TopBar({ currentHtml }: TopBarProps) {
       className={`flex items-center gap-3 border-b border-border bg-background p-2 ${fontFamilyClass}`}
     >
       <div className="flex items-center gap-2">
-        <Select value={ui.pageSize} onValueChange={(value) => setPageSize(value as any)}>
-          <SelectTrigger className="w-[100px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="A4">A4</SelectItem>
-            <SelectItem value="Letter">Letter</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={ui.orientation} onValueChange={(value) => setOrientation(value as any)}>
-          <SelectTrigger className="w-[120px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="portrait">Portrait</SelectItem>
-            <SelectItem value="landscape">Landscape</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={ui.fontFamily} onValueChange={(value) => setFontFamily(value as any)}>
-          <SelectTrigger className="w-[120px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="system">System</SelectItem>
-            <SelectItem value="serif">Serif</SelectItem>
-            <SelectItem value="mono">Mono</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={ui.theme} onValueChange={(value) => setTheme(value as any)}>
-          <SelectTrigger className="w-[100px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="light">Light</SelectItem>
-            <SelectItem value="dark">Dark</SelectItem>
-            <SelectItem value="sepia">Sepia</SelectItem>
-          </SelectContent>
-        </Select>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="secondary" className="h-8 w-auto rounded-full px-3">
+              <span className="font-medium">{ui.pageSize}</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-[120px]">
+            {["A4", "Letter"].map((size) => (
+              <DropdownMenuItem
+                key={size}
+                onSelect={() => setPageSize(size as any)}
+                className="flex items-center justify-between"
+              >
+                <span>{size}</span>
+                {ui.pageSize === size && <Check className="ml-auto size-4" />}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="secondary" className="h-8 w-auto rounded-full px-3">
+              <span className="font-medium capitalize">{ui.orientation}</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-[140px]">
+            {["portrait", "landscape"].map((orientation) => (
+              <DropdownMenuItem
+                key={orientation}
+                onSelect={() => setOrientation(orientation as any)}
+                className="flex items-center justify-between"
+              >
+                <span className="capitalize">{orientation}</span>
+                {ui.orientation === orientation && <Check className="ml-auto size-4" />}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="secondary" className="h-8 w-auto rounded-full px-3">
+              <span className="font-medium capitalize">{ui.fontFamily}</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-[140px]">
+            {["system", "serif", "mono"].map((font) => (
+              <DropdownMenuItem
+                key={font}
+                onSelect={() => setFontFamily(font as any)}
+                className="flex items-center justify-between"
+              >
+                <span className="capitalize">{font}</span>
+                {ui.fontFamily === font && <Check className="ml-auto size-4" />}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="secondary" className="h-8 w-auto rounded-full px-3">
+              <span className="font-medium capitalize">{ui.theme}</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-[120px]">
+            {["light", "dark", "sepia"].map((theme) => (
+              <DropdownMenuItem
+                key={theme}
+                onSelect={() => setTheme(theme as any)}
+                className="flex items-center justify-between"
+              >
+                <span className="capitalize">{theme}</span>
+                {ui.theme === theme && <Check className="ml-auto size-4" />}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <div className="ml-auto flex items-center gap-2">
         <Button

@@ -6,7 +6,7 @@ import Editor from "@/components/editor";
 import Preview from "@/components/preview";
 import { useStore } from "@/state/store";
 import PageStyles from "@/components/page-styles";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 export default function Home() {
   const [currentHtml, setCurrentHtml] = useState("");

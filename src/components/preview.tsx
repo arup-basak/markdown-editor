@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useStore } from "@/state/store";
 import { markdownToHtml } from "@/lib/markdown";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 export default function Preview({
   onHtml,

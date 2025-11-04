@@ -5,7 +5,6 @@ import { db } from "@/lib/db";
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth.api.getSession({ 
     headers: req.headers,
-    cookies: req.cookies,
   });
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -32,7 +31,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth.api.getSession({ 
     headers: req.headers,
-    cookies: req.cookies,
   });
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -82,7 +80,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth.api.getSession({ 
     headers: req.headers,
-    cookies: req.cookies,
   });
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
