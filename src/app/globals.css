@@ -79,24 +79,24 @@
 }
 
 .dark {
-  --background: 229 49% 8%; /* darker version of #14213d */
-  --foreground: 0 0% 100%; /* #ffffff */
-  --card: 229 49% 8%; 
-  --card-foreground: 0 0% 100%;
-  --popover: 229 49% 8%;
-  --popover-foreground: 0 0% 100%;
-  --primary: 39 98% 53%; /* #fca311 */
-  --primary-foreground: 0 0% 0%; /* #000000 */
-  --secondary: 0 0% 20%; /* slightly lighter gray */
-  --secondary-foreground: 0 0% 100%;
-  --muted: 0 0% 20%;
-  --muted-foreground: 0 0% 75%;
-  --accent: 39 98% 53%; /* #fca311 */
-  --accent-foreground: 229 49% 8%;
-  --destructive: 0 63% 31%;
-  --border: 0 0% 20%;
-  --input: 0 0% 20%;
-  --ring: 39 98% 53%; /* orange glow */
+  --background: oklch(0.08 0.049 229); /* darker version of #14213d */
+  --foreground: oklch(1 0 0); /* #ffffff */
+  --card: oklch(0.08 0.049 229);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0.08 0.049 229);
+  --popover-foreground: oklch(1 0 0);
+  --primary: oklch(0.769 0.188 70.08); /* #fca311 */
+  --primary-foreground: oklch(0 0 0); /* #000000 */
+  --secondary: oklch(0.2 0 0); /* slightly lighter gray */
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.2 0 0);
+  --muted-foreground: oklch(0.75 0 0);
+  --accent: oklch(0.769 0.188 70.08); /* #fca311 */
+  --accent-foreground: oklch(0.08 0.049 229);
+  --destructive: oklch(0.31 0.63 0);
+  --border: oklch(0.2 0 0);
+  --input: oklch(0.2 0 0);
+  --ring: oklch(0.769 0.188 70.08); /* orange glow */
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -126,17 +126,36 @@ body {
 
 /* Print styles: mirror screen layout with readable defaults */
 @media print {
-  html, body { height: auto; }
-  body { background: white; color: black; }
-  .no-print { display: none !important; }
-  .prose { max-width: 100%; }
+  html,
+  body {
+    height: auto;
+  }
+  body {
+    background: white;
+    color: black;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .prose {
+    max-width: 100%;
+  }
 }
 
 /* Pretty-code tweaks */
-code[data-theme*="shiki"] { white-space: pre; }
-pre code { display: grid; }
-.heading-link { opacity: 0.4; margin-left: 0.25rem; }
-.heading-link:hover { opacity: 1; }
+code[data-theme*="shiki"] {
+  white-space: pre;
+}
+pre code {
+  display: grid;
+}
+.heading-link {
+  opacity: 0.4;
+  margin-left: 0.25rem;
+}
+.heading-link:hover {
+  opacity: 1;
+}
 
 .prose {
   h1 {
