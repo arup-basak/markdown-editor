@@ -1,6 +1,7 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "@/state/store";
+import { useDocument } from "@/lib/queries";
 import { markdownToHtml } from "@/lib/markdown";
 import { motion } from "motion/react";
 
@@ -9,11 +10,8 @@ export default function Preview({
 }: {
   onHtml: (html: string) => void;
 }) {
-  const { docs, currentDocId, ui } = useStore();
-  const doc = useMemo(
-    () => docs.find((d) => d.id === currentDocId) || null,
-    [docs, currentDocId]
-  );
+  const { currentDocId, ui } = useStore();
+  const { data: doc } = useDocument(currentDocId);
   const [html, setHtml] = useState<string>("");
 
   useEffect(() => {

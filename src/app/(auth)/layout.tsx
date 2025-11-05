@@ -1,7 +1,8 @@
 import React from "react";
+import LoginSidebar from "@/components/login/login-sidebar";
 
 export const metadata = {
-  title: "Authentication",
+  title: "Flowprint: Authentication",
   description: "Authentication",
 };
 
@@ -10,5 +11,10 @@ export default function AuthLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <>{children}</>;
+  return (
+    <div className="min-h-screen flex">
+      <LoginSidebar />
+      {children}
+    </div>
+  );
 }

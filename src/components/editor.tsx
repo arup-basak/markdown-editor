@@ -1,10 +1,12 @@
 "use client";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { markdown } from "@codemirror/lang-markdown";
 import { autocompletion, completionKeymap } from "@codemirror/autocomplete";
 import { EditorView, keymap } from "@codemirror/view";
 import { useStore } from "@/state/store";
+import { useDocument, useUpdateDocumentContent } from "@/lib/queries";
+import { updateDocument } from "@/lib/actions";
 import { motion } from "framer-motion";
 
 // Hyperlink autocomplete provider
@@ -70,16 +72,67 @@ const clickableLinks = EditorView.domEventHandlers({
 });
 
 export default function Editor({ className }: { className?: string }) {
-  const { docs, currentDocId, updateContent, saveNow, ui } = useStore();
-  const doc = useMemo(() => docs.find((d) => d.id === currentDocId) || null, [docs, currentDocId]);
+  const { currentDocId, ui } = useStore();
+  const { data: doc } = useDocument(currentDocId);
+  const updateContent = useUpdateDocumentContent();
+  const [localContent, setLocalContent] = useState("");
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Sync local content with document content when document changes
+  useEffect(() => {
+    if (doc?.content !== undefined) {
+      setLocalContent(doc.content);
+    }
+  }, [doc?.id]); // Only sync when document ID changes (switching documents)
+
+  // Debounced save
+  const handleContentChange = (value: string) => {
+    setLocalContent(value);
+    if (!currentDocId) return;
+    
+    // Clear existing timeout
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    
+    // Set new timeout for debounced save
+    saveTimeoutRef.current = setTimeout(() => {
+      updateContent.mutate({ id: currentDocId, content: value });
+    }, 2000);
+  };
+
+  // Save immediately on blur
+  const handleBlur = () => {
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = null;
+    }
+    if (currentDocId && localContent !== doc?.content) {
+      updateContent.mutate({ id: currentDocId, content: localContent });
+    }
+  };
+
+  // Save on beforeunload
   useEffect(() => {
     const onBeforeUnload = () => {
-      if (doc) saveNow(doc.id);
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      if (currentDocId && localContent !== doc?.content) {
+        // Call server action directly (fire-and-forget for beforeunload)
+        updateDocument(currentDocId, { content: localContent }).catch(() => {
+          // Ignore errors during unload
+        });
+      }
     };
     window.addEventListener("beforeunload", onBeforeUnload);
-    return () => window.removeEventListener("beforeunload", onBeforeUnload);
-  }, [doc, saveNow]);
+    return () => {
+      window.removeEventListener("beforeunload", onBeforeUnload);
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [currentDocId, localContent, doc?.content]);
 
   if (!doc) {
     return (
@@ -103,7 +156,7 @@ export default function Editor({ className }: { className?: string }) {
       } ${className || ""}`}
     >
       <CodeMirror
-        value={doc.content}
+        value={localContent}
         height="100%"
         basicSetup={{ lineNumbers: true }}
         extensions={[
@@ -113,8 +166,8 @@ export default function Editor({ className }: { className?: string }) {
           keymap.of(completionKeymap),
         ]}
         theme={ui.theme === "dark" ? "dark" : "light"}
-        onChange={(value) => updateContent(doc.id, value)}
-        onBlur={() => saveNow(doc.id)}
+        onChange={handleContentChange}
+        onBlur={handleBlur}
         className={className}
       />
     </motion.div>
