@@ -68,17 +68,23 @@ model Verification {
 }
 
 model Document {
-  id        String   @id @default(cuid())
-  title     String   @default("Untitled")
-  content   String   @default("# New Document\n\nStart writing markdown…")
+  id        String      @id @default(cuid())
+  title     String      @default("Untitled")
+  content   String      @default("# New Document\n\nStart writing markdown…")
+  type      DocumentType @default(markdown)
   userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime     @updatedAt
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   versions  DocumentVersion[]
 
   @@index([userId])
   @@index([userId, updatedAt])
+}
+
+enum DocumentType {
+  markdown
+  latex
 }
 
 model DocumentVersion {

@@ -107,9 +107,7 @@ export default function Editor({ className }: { className?: string }) {
         height="100%"
         basicSetup={{ lineNumbers: true }}
         extensions={[
-          markdown(),
-          linkAutocomplete,
-          clickableLinks,
+          ...(doc.type === "markdown" ? [markdown(), linkAutocomplete, clickableLinks] : []),
           keymap.of(completionKeymap),
         ]}
         theme={ui.theme === "dark" ? "dark" : "light"}

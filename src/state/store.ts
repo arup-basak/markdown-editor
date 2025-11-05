@@ -2,10 +2,12 @@
 import { create } from "zustand";
 
 export type DocVersion = { id: string; createdAt: Date | string; content: string };
+export type DocType = "markdown" | "latex";
 export type Doc = {
   id: string;
   title: string;
   content: string;
+  type: DocType;
   createdAt: Date | string;
   updatedAt: Date | string;
   versions: DocVersion[];
@@ -34,7 +36,7 @@ type Store = {
   setSearchQuery: (q: string) => void;
   load: () => Promise<void>;
   selectDoc: (id: string) => void;
-  createDoc: () => Promise<void>;
+  createDoc: (type?: DocType) => Promise<void>;
   renameDoc: (id: string, title: string) => Promise<void>;
   deleteDoc: (id: string) => Promise<void>;
   updateContent: (id: string, content: string) => void;
@@ -67,12 +69,18 @@ export const useStore = create<Store>((set, get) => ({
     }
   },
   selectDoc: (id) => set({ currentDocId: id }),
-  createDoc: async () => {
+  createDoc: async (type: DocType = "markdown") => {
     try {
       const res = await fetch("/api/documents", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: "Untitled" }),
+        body: JSON.stringify({ 
+          title: "Untitled",
+          type,
+          content: type === "latex" 
+            ? "\\documentclass{article}\n\\begin{document}\n\n\\end{document}"
+            : "# New Document\n\nStart writing markdown…"
+        }),
       });
       if (!res.ok) throw new Error("Failed to create document");
       const doc = await res.json();

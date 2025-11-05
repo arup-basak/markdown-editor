@@ -6,6 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Sidebar() {
   const { docs, currentDocId, load, selectDoc, createDoc, renameDoc, deleteDoc, searchQuery, setSearchQuery } =
@@ -33,14 +39,25 @@ export default function Sidebar() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <Button
-          type="button"
-          size="icon"
-          onClick={() => createDoc()}
-          title="New Document"
-        >
-          <PlusIcon className="h-4 w-4" />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              type="button"
+              size="icon"
+              title="New Document"
+            >
+              <PlusIcon className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => createDoc("markdown")}>
+              New Markdown Document
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => createDoc("latex")}>
+              New LaTeX Document
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <div className="flex-1 overflow-y-auto">
         <AnimatePresence mode="popLayout">

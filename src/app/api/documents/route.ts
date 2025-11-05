@@ -32,12 +32,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { title, content } = await req.json();
+  const { title, content, type } = await req.json();
 
   const document = await db.document.create({
     data: {
       title: title || "Untitled",
-      content: content || "# New Document\n\nStart writing markdown…",
+      content: content || (type === "latex" 
+        ? "\\documentclass{article}\n\\begin{document}\n\n\\end{document}"
+        : "# New Document\n\nStart writing markdown…"),
+      type: type || "markdown",
       userId: session.user.id,
     },
   });

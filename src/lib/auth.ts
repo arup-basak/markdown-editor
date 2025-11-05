@@ -22,24 +22,24 @@ export const auth = betterAuth({
     updateAge: 60 * 60 * 24, // 1 day
   },
   plugins: [
-    polar({
-      client: polarClient,
-      createCustomerOnSignUp: true,
-      use: [
-        checkout({
-          products: [
-            {
-              productId: "123-456-789", // ID of Product from Polar Dashboard
-              slug: "pro", // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
-            },
-          ],
-          successUrl: "/success?checkout_id={CHECKOUT_ID}",
-          authenticatedUsersOnly: true,
-        }),
-        portal(),
-        usage(),
-      ],
-    }),
+    // polar({
+    //   client: polarClient,
+    //   createCustomerOnSignUp: true,
+    //   use: [
+    //     checkout({
+    //       products: [
+    //         {
+    //           productId: "123-456-789", // ID of Product from Polar Dashboard
+    //           slug: "pro", // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
+    //         },
+    //       ],
+    //       successUrl: "/success?checkout_id={CHECKOUT_ID}",
+    //       authenticatedUsersOnly: true,
+    //     }),
+    //     portal(),
+    //     usage(),
+    //   ],
+    // }),
   ],
 });
 
