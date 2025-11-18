@@ -10,14 +10,16 @@ export default function Preview({
 }: {
   onHtml: (html: string) => void;
 }) {
-  const { currentDocId, ui } = useStore();
+  const { currentDocId, ui, localContent } = useStore();
   const { data: doc } = useDocument(currentDocId);
   const [html, setHtml] = useState<string>("");
 
   useEffect(() => {
     let active = true;
     const render = async () => {
-      const raw = doc?.content || "";
+      // Use localContent for real-time updates while typing, fall back to doc.content
+      // localContent is synced with doc.content when document changes, so it's always current
+      const raw = currentDocId && localContent !== undefined ? localContent : (doc?.content || "");
       const result = await markdownToHtml(raw, { theme: ui.theme });
       if (!active) return;
       setHtml(result);
@@ -27,7 +29,7 @@ export default function Preview({
     return () => {
       active = false;
     };
-  }, [doc?.content, ui.theme, onHtml]);
+  }, [localContent, doc?.content, currentDocId, ui.theme, onHtml]);
 
   return (
     <motion.div

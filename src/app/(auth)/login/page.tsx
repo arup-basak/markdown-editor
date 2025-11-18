@@ -8,12 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Moon, Sun } from "lucide-react";
 import GoogleLoginButton from "@/components/login/google-login";
 import LoginSidebar from "@/components/login/login-sidebar";
+import { useDarkMode } from "@/hooks/use-theme";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -50,7 +52,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background">
+    <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background relative">
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={() => toggleDarkMode(!isDarkMode)}
+        className="absolute top-4 right-4"
+        title={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+      >
+        {isDarkMode ? (
+          <Sun className="h-5 w-5" />
+        ) : (
+          <Moon className="h-5 w-5" />
+        )}
+      </Button>
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h2 className="text-3xl font-bold mb-2">Welcome Back</h2>

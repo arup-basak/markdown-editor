@@ -22,7 +22,10 @@ export async function getDocuments(): Promise<Doc[]> {
 
   const documents = await db.document.findMany({
     where: { userId: session.user.id },
-    orderBy: { updatedAt: "desc" },
+    orderBy: [
+      { order: "asc" },
+      { updatedAt: "desc" },
+    ],
     include: {
       versions: {
         orderBy: { createdAt: "desc" },
@@ -57,11 +60,21 @@ export async function getDocument(id: string): Promise<Doc> {
 export async function createDocument(title?: string, content?: string): Promise<Doc> {
   const session = await getSession();
 
+  // Get the maximum order value for this user's documents
+  const maxOrderDoc = await db.document.findFirst({
+    where: { userId: session.user.id },
+    orderBy: { order: "desc" },
+    select: { order: true },
+  });
+
+  const newOrder = maxOrderDoc ? maxOrderDoc.order + 1 : 0;
+
   const document = await db.document.create({
     data: {
       title: title || "Untitled",
       content: content || "# New Document\n\nStart writing markdown…",
       userId: session.user.id,
+      order: newOrder,
     },
     include: {
       versions: {
@@ -132,6 +145,35 @@ export async function deleteDocument(id: string): Promise<void> {
   }
 
   await db.document.delete({ where: { id } });
+  revalidatePath("/");
+}
+
+export async function updateDocumentOrder(documentIds: string[]): Promise<void> {
+  const session = await getSession();
+
+  // Verify all documents belong to the user
+  const userDocs = await db.document.findMany({
+    where: {
+      id: { in: documentIds },
+      userId: session.user.id,
+    },
+    select: { id: true },
+  });
+
+  if (userDocs.length !== documentIds.length) {
+    throw new Error("Unauthorized or document not found");
+  }
+
+  // Update order for each document
+  await Promise.all(
+    documentIds.map((id, index) =>
+      db.document.update({
+        where: { id },
+        data: { order: index },
+      })
+    )
+  );
+
   revalidatePath("/");
 }
 

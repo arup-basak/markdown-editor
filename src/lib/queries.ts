@@ -8,6 +8,7 @@ import {
   createDocument,
   updateDocument,
   deleteDocument,
+  updateDocumentOrder,
 } from "@/lib/actions";
 
 const DOCUMENTS_QUERY_KEY = ["documents"] as const;
@@ -125,6 +126,44 @@ export function useDeleteDocument() {
       // Remove from cache
       queryClient.removeQueries({ queryKey: DOCUMENT_QUERY_KEY(id) });
       // Invalidate documents list
+      queryClient.invalidateQueries({ queryKey: DOCUMENTS_QUERY_KEY });
+    },
+  });
+}
+
+// Hook to update document order
+export function useUpdateDocumentOrder() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (documentIds: string[]) => updateDocumentOrder(documentIds),
+    onMutate: async (documentIds) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: DOCUMENTS_QUERY_KEY });
+      
+      // Snapshot previous value
+      const previousDocs = queryClient.getQueryData<Doc[]>(DOCUMENTS_QUERY_KEY);
+      
+      // Optimistically update order
+      if (previousDocs) {
+        const docsMap = new Map(previousDocs.map((d) => [d.id, d]));
+        const reorderedDocs = documentIds
+          .map((id) => docsMap.get(id))
+          .filter((d): d is Doc => d !== undefined);
+        
+        queryClient.setQueryData<Doc[]>(DOCUMENTS_QUERY_KEY, reorderedDocs);
+      }
+      
+      return { previousDocs };
+    },
+    onError: (_err, _variables, context) => {
+      // Rollback on error
+      if (context?.previousDocs) {
+        queryClient.setQueryData(DOCUMENTS_QUERY_KEY, context.previousDocs);
+      }
+    },
+    onSuccess: () => {
+      // Invalidate to ensure we have the latest data
       queryClient.invalidateQueries({ queryKey: DOCUMENTS_QUERY_KEY });
     },
   });

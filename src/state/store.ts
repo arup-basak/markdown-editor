@@ -6,6 +6,7 @@ export type Doc = {
   id: string;
   title: string;
   content: string;
+  order: number;
   createdAt: Date | string;
   updatedAt: Date | string;
   versions: DocVersion[];
@@ -27,6 +28,7 @@ type Store = {
   currentDocId: string | null;
   ui: UIState;
   searchQuery: string;
+  localContent: string;
   setTheme: (t: Theme) => void;
   setPageSize: (s: PageSize) => void;
   setOrientation: (o: Orientation) => void;
@@ -34,6 +36,7 @@ type Store = {
   setSidebarCollapsed: (collapsed: boolean) => void;
   setSearchQuery: (q: string) => void;
   selectDoc: (id: string) => void;
+  setLocalContent: (content: string) => void;
 };
 
 export const useStore = create<Store>((set) => ({
@@ -46,6 +49,7 @@ export const useStore = create<Store>((set) => ({
     sidebarCollapsed: false,
   },
   searchQuery: "",
+  localContent: "",
   setTheme: (t) => set((s) => ({ ui: { ...s.ui, theme: t } })),
   setPageSize: (p) => set((s) => ({ ui: { ...s.ui, pageSize: p } })),
   setOrientation: (o) => set((s) => ({ ui: { ...s.ui, orientation: o } })),
@@ -53,4 +57,5 @@ export const useStore = create<Store>((set) => ({
   setSidebarCollapsed: (collapsed) => set((s) => ({ ui: { ...s.ui, sidebarCollapsed: collapsed } })),
   setSearchQuery: (q) => set({ searchQuery: q }),
   selectDoc: (id) => set({ currentDocId: id }),
+  setLocalContent: (content) => set({ localContent: content }),
 }));

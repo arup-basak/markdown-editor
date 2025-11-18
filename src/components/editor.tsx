@@ -72,18 +72,19 @@ const clickableLinks = EditorView.domEventHandlers({
 });
 
 export default function Editor({ className }: { className?: string }) {
-  const { currentDocId, ui } = useStore();
+  const { currentDocId, ui, localContent, setLocalContent } = useStore();
   const { data: doc } = useDocument(currentDocId);
   const updateContent = useUpdateDocumentContent();
-  const [localContent, setLocalContent] = useState("");
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Sync local content with document content when document changes
   useEffect(() => {
-    if (doc?.content !== undefined) {
+    if (!currentDocId) {
+      setLocalContent("");
+    } else if (doc?.content !== undefined) {
       setLocalContent(doc.content);
     }
-  }, [doc?.id]); // Only sync when document ID changes (switching documents)
+  }, [doc?.id, currentDocId, setLocalContent]); // Only sync when document ID changes (switching documents)
 
   // Debounced save
   const handleContentChange = (value: string) => {

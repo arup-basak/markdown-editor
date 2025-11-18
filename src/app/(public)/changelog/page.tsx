@@ -37,8 +37,8 @@ export default function ChangelogPage() {
           }}
         />
         <Dithering
-          colors={["#ffffff", "#f2f2f2", "#eaeaea"]}
-          intensity={0.18}
+          colorBack="#eaeaea"
+          colorFront="#ffffff"
           shape="simplex"
           style={{
             position: "absolute",
