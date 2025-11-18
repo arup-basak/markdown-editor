@@ -3,25 +3,33 @@ import type { MetadataRoute } from "next";
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://flowprint.app";
 
-  return [
+  const routes = [
     {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: "daily",
+      path: "",
+      changeFrequency: "daily" as const,
       priority: 1,
     },
     {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
+      path: "/about",
+      changeFrequency: "monthly" as const,
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/pricing`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
+      path: "/pricing",
+      changeFrequency: "weekly" as const,
       priority: 0.9,
     },
+    {
+      path: "/changelog",
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
   ];
-}
 
+  return routes.map((route) => ({
+    url: `${baseUrl}${route.path}`,
+    lastModified: new Date(),
+    changeFrequency: route.changeFrequency,
+    priority: route.priority,
+  }));
+}

@@ -113,7 +113,7 @@ export default function TopBar({ currentHtml }: TopBarProps) {
       <div className="ml-auto flex items-center gap-2">
         <Button
           type="button"
-          onClick={() => exportToPDFClient()}
+          onClick={() => exportToDOCXFromHtml(currentHtml)}
         >
           Export PDF
         </Button>
