@@ -2,7 +2,7 @@ import React from "react";
 
 const LoginSidebar = () => {
   return (
-    <div className="lg:w-1/2 p-4 lg:flex hidden">
+    <div className="lg:w-1/2 p-4 lg:flex hidden bg-background">
       <div className="bg-linear-to-br from-card-foreground to-card-foreground/80 rounded-xl p-12 flex flex-col justify-between text-white w-full">
         <div>
           <h1 className="text-4xl font-bold mb-2">Markdown Editor</h1>
