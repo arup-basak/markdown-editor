@@ -18,10 +18,14 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { releases } from "@/constants/releases";
+import { Navigation } from "@/components/landing/navigation";
+import { Footer } from "@/components/footer";
 
 export default function ChangelogPage() {
   return (
-    <section className="relative w-full overflow-hidden">
+    <div className="min-h-screen bg-background font-sans selection:bg-primary/20">
+      <Navigation />
+      <section className="relative w-full overflow-hidden">
       {/* shader header full-width */}
       <div className="relative w-full overflow-hidden">
         <MeshGradient
@@ -66,7 +70,7 @@ export default function ChangelogPage() {
       {/* content */}
       <div className="grid justify-center container mx-auto px-4  border-x border-border">
         {releases.map((item, idx) => (
-          <Dialog key={idx}>
+          <Dialog key={item.title}>
             <div className="relative flex flex-col lg:flex-row w-full py-16 gap-6 lg:gap-0">
               <div className="lg:sticky top-2 h-fit">
                 <time className="text-muted-foreground w-36 text-sm font-medium lg:absolute">
@@ -85,7 +89,7 @@ export default function ChangelogPage() {
                       alt={item.title}
                       className="border-border max-h-96 w-full rounded-lg border object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 rounded-lg" />
+                    <div className="absolute inset-0 bg-linear-to-b from-transparent via-background/50 to-background pointer-events-none" />
                   </div>
                 </DialogTrigger>
                 <p className="text-muted-foreground text-sm font-medium">
@@ -97,7 +101,7 @@ export default function ChangelogPage() {
                     <div className="flex items-center -space-x-2">
                       {item.contributors.slice(0, 3).map((src, id) => (
                         <img
-                          key={id}
+                          key={src}
                           src={src}
                           alt="Contributor"
                           className="border-border size-6 rounded-full border"
@@ -172,6 +176,8 @@ export default function ChangelogPage() {
           </Dialog>
         ))}
       </div>
-    </section>
+      </section>
+      <Footer />
+    </div>
   );
 }

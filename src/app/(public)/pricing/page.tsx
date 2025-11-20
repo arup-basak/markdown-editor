@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Check, Loader2 } from "lucide-react";
 import { motion } from "motion/react";
 import { authClient } from "@/lib/auth-client";
+import { Navigation } from "@/components/landing/navigation";
+import { Footer } from "@/components/footer";
 
 const pricingPlans = [
   {
@@ -123,8 +125,9 @@ export default function PricingPage() {
     }
   };
   return (
-    <div className="min-h-screen p-8 bg-background">
-      <div className="max-w-7xl mx-auto space-y-12">
+    <div className="min-h-screen bg-background font-sans selection:bg-primary/20">
+      <Navigation />
+      <div className="max-w-7xl mx-auto space-y-12 px-8 py-24">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -174,7 +177,7 @@ export default function PricingPage() {
                 <CardContent className="flex-1">
                   <ul className="space-y-3">
                     {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-start gap-2">
+                      <li key={feature} className="flex items-start gap-2">
                         <Check className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                         <span className="text-sm">{feature}</span>
                       </li>
@@ -257,6 +260,7 @@ export default function PricingPage() {
           </div>
         </motion.div>
       </div>
+      <Footer />
     </div>
   );
 }

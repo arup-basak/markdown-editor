@@ -3,6 +3,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "motion/react";
 import { Code, Zap, Shield, Heart, Users, Sparkles } from "lucide-react";
+import { Navigation } from "@/components/landing/navigation";
+import { Footer } from "@/components/footer";
 
 const features = [
   {
@@ -52,8 +54,9 @@ const team = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen p-8 bg-background">
-      <div className="max-w-7xl mx-auto space-y-16">
+    <div className="min-h-screen bg-background font-sans selection:bg-primary/20">
+      <Navigation />
+      <div className="max-w-7xl mx-auto space-y-16 px-8 py-24">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -167,6 +170,7 @@ export default function AboutPage() {
           </Card>
         </motion.div>
       </div>
+      <Footer />
     </div>
   );
 }

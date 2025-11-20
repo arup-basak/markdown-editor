@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Mail, Lock, Eye, EyeOff, Moon, Sun } from "lucide-react";
 import GoogleLoginButton from "@/components/login/google-login";
-import LoginSidebar from "@/components/login/login-sidebar";
 import { useDarkMode } from "@/hooks/use-theme";
 
 export default function LoginPage() {
@@ -21,16 +20,6 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  const handleGoogleSignIn = async () => {
-    try {
-      await authClient.signIn.social({
-        provider: "google",
-      });
-    } catch (err: any) {
-      setError(err.message || "Google sign in failed");
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,21 +33,21 @@ export default function LoginPage() {
       });
       router.push("/");
       router.refresh();
-    } catch (err: any) {
-      setError(err.message || "Authentication failed");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Authentication failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background relative">
+    <div className="w-full lg:w-1/2 flex items-center justify-center p-8 relative">
       <Button
         type="button"
         variant="ghost"
         size="icon"
         onClick={() => toggleDarkMode(!isDarkMode)}
-        className="absolute top-4 right-4"
+        className="absolute top-8 right-8 rounded-full"
         title={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
       >
         {isDarkMode ? (
@@ -67,11 +56,12 @@ export default function LoginPage() {
           <Moon className="h-5 w-5" />
         )}
       </Button>
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold mb-2">Welcome Back</h2>
+
+      <div className="w-full max-w-sm space-y-10">
+        <div className="space-y-2">
+          <h2 className="text-3xl font-bold tracking-tight">Return to Focus</h2>
           <p className="text-muted-foreground">
-            Sign in to your account to continue
+            Enter your credentials to access your workspace.
           </p>
         </div>
 
@@ -80,38 +70,41 @@ export default function LoginPage() {
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border"></div>
+              <div className="w-full border-t border-border/40"></div>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-background text-muted-foreground">
-                Or
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with email
               </span>
             </div>
           </div>
 
-          {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  autoComplete="email"
-                  placeholder="johndoe@gmail.com"
-                  className="pl-10"
-                />
-              </div>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+                placeholder="name@example.com"
+                className="h-11"
+              />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Password</Label>
+                <Link
+                  href="/forgot-password"
+                  className="text-xs text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Forgot password?
+                </Link>
+              </div>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -119,13 +112,13 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   autoComplete="current-password"
-                  placeholder="Enter your password"
-                  className="pl-10 pr-10"
+                  placeholder="••••••••"
+                  className="h-11 pr-10"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {showPassword ? (
                     <EyeOff className="h-4 w-4" />
@@ -142,7 +135,7 @@ export default function LoginPage() {
               </Alert>
             )}
 
-            <Button type="submit" disabled={loading} className="w-full">
+            <Button type="submit" disabled={loading} className="w-full h-11 font-medium">
               {loading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
@@ -151,7 +144,7 @@ export default function LoginPage() {
             Don't have an account?{" "}
             <Link
               href="/signup"
-              className="text-primary hover:underline font-medium"
+              className="text-primary hover:underline font-medium underline-offset-4"
             >
               Sign up
             </Link>
